@@ -18,13 +18,22 @@ export default function VerifyCodePage() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error: verifyError } = await supabase.auth.verifyOtp({
+
+    // El código puede haber sido generado como "recovery" (reenviar código,
+    // usuario ya existente) o como "invite" (primera invitación, usuario
+    // nuevo) — Supabase exige que el tipo coincida exactamente con el que
+    // se usó para generarlo, así que probamos ambos.
+    const primerIntento = await supabase.auth.verifyOtp({
       email,
       token: code.trim(),
       type: "recovery",
     });
 
-    if (verifyError) {
+    const segundoIntento = primerIntento.error
+      ? await supabase.auth.verifyOtp({ email, token: code.trim(), type: "invite" })
+      : primerIntento;
+
+    if (segundoIntento.error) {
       setError("Código incorrecto o expirado. Pide que te generen uno nuevo.");
       setLoading(false);
       return;
