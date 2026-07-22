@@ -18,7 +18,7 @@ export interface ProductoInput {
 }
 
 export async function crearProducto(input: ProductoInput) {
-  await requireRol(["admin"]);
+  await requireRol(["admin", "compras"]);
   const supabase = await createClient();
   const { error } = await supabase.from("productos").insert(input);
   if (error) return { success: false, error: error.message };
@@ -27,7 +27,7 @@ export async function crearProducto(input: ProductoInput) {
 }
 
 export async function actualizarProducto(id: string, input: ProductoInput) {
-  await requireRol(["admin"]);
+  await requireRol(["admin", "compras"]);
   const supabase = await createClient();
   const { error } = await supabase.from("productos").update(input).eq("id", id);
   if (error) return { success: false, error: error.message };
@@ -36,7 +36,7 @@ export async function actualizarProducto(id: string, input: ProductoInput) {
 }
 
 export async function eliminarProducto(id: string) {
-  await requireRol(["admin"]);
+  await requireRol(["admin", "compras"]);
   const supabase = await createClient();
   const { error } = await supabase.from("productos").delete().eq("id", id);
   if (error) return { success: false, error: error.message };

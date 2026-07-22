@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import ProveedoresAdmin from "./ProveedoresAdmin";
 
 export default async function AdminProveedoresPage() {
-  await requireRol(["admin"]);
+  await requireRol(["admin", "compras"]);
   const supabase = await createClient();
   const { data: proveedores } = await supabase
     .from("proveedores")

@@ -11,7 +11,7 @@ export interface ProveedorInput {
 }
 
 export async function crearProveedor(input: ProveedorInput) {
-  await requireRol(["admin"]);
+  await requireRol(["admin", "compras"]);
   const supabase = await createClient();
   const { error } = await supabase.from("proveedores").insert(input);
   if (error) return { success: false, error: error.message };
@@ -20,7 +20,7 @@ export async function crearProveedor(input: ProveedorInput) {
 }
 
 export async function actualizarProveedor(id: string, input: ProveedorInput) {
-  await requireRol(["admin"]);
+  await requireRol(["admin", "compras"]);
   const supabase = await createClient();
   const { error } = await supabase.from("proveedores").update(input).eq("id", id);
   if (error) return { success: false, error: error.message };
@@ -29,7 +29,7 @@ export async function actualizarProveedor(id: string, input: ProveedorInput) {
 }
 
 export async function eliminarProveedor(id: string) {
-  await requireRol(["admin"]);
+  await requireRol(["admin", "compras"]);
   const supabase = await createClient();
   const { error } = await supabase.from("proveedores").delete().eq("id", id);
   if (error) return { success: false, error: error.message };
