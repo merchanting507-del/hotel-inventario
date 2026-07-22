@@ -15,7 +15,10 @@ export async function registrarMovimiento(
   productoId: string,
   tipo: TipoMovimiento,
   cantidad: number,
-  nota?: string
+  nota?: string,
+  // areaId explícito: lo usa admin/compras cuando prueban/registran en
+  // nombre de Cocina desde el selector "Bodega/Cocina" de la pantalla.
+  areaIdParam?: string
 ): Promise<RegistrarMovimientoResult> {
   if (!productoId) return { success: false, error: "Selecciona un producto." };
   if (!cantidad || cantidad <= 0) {
@@ -26,13 +29,18 @@ export async function registrarMovimiento(
   const supabase = await createClient();
   const delta = tipo === "entrada" ? cantidad : -cantidad;
 
-  // El rol cocina tiene su propio inventario local (stock_area), separado
-  // del stock de bodega: sus movimientos no tocan productos.stock_actual.
-  if (usuario.rol === "cocina" && usuario.area_id) {
+  // Un usuario cocina siempre usa su propia área, sin importar lo que
+  // llegue del cliente; admin/compras usan la que eligieron en el toggle.
+  const areaId = usuario.rol === "cocina" ? usuario.area_id : areaIdParam;
+
+  // Cocina (o admin/compras probando "como Cocina") tiene su propio
+  // inventario local (stock_area), separado del stock de bodega: estos
+  // movimientos no tocan productos.stock_actual.
+  if (areaId) {
     const { data: fila } = await supabase
       .from("stock_area")
       .select("id, cantidad")
-      .eq("area_id", usuario.area_id)
+      .eq("area_id", areaId)
       .eq("producto_id", productoId)
       .maybeSingle();
 
@@ -43,7 +51,7 @@ export async function registrarMovimiento(
       usuario_id: usuario.id,
       tipo,
       cantidad,
-      area_id: usuario.area_id,
+      area_id: areaId,
       nota: nota || null,
     });
     if (movError) return { success: false, error: "No se pudo registrar el movimiento." };
@@ -52,7 +60,7 @@ export async function registrarMovimiento(
       ? await supabase.from("stock_area").update({ cantidad: nuevoStock }).eq("id", fila.id)
       : await supabase
           .from("stock_area")
-          .insert({ area_id: usuario.area_id, producto_id: productoId, cantidad: nuevoStock });
+          .insert({ area_id: areaId, producto_id: productoId, cantidad: nuevoStock });
     if (stockError) {
       return { success: false, error: "Movimiento guardado, pero no se pudo actualizar el stock." };
     }

@@ -69,9 +69,11 @@ function StepIndicator({ current }: { current: Step }) {
 export default function MovimientoForm({
   productos,
   categorias,
+  areaId,
 }: {
   productos: Producto[];
   categorias: Categoria[];
+  areaId?: string | null;
 }) {
   const [productosState, setProductosState] = useState(productos);
   const [step, setStep] = useState<Step>("producto");
@@ -137,7 +139,13 @@ export default function MovimientoForm({
     );
 
     startTransition(async () => {
-      const result = await registrarMovimiento(seleccionado.id, tipo, cantidadNum);
+      const result = await registrarMovimiento(
+        seleccionado.id,
+        tipo,
+        cantidadNum,
+        undefined,
+        areaId ?? undefined
+      );
 
       if (!result.success) {
         // revertir optimismo
