@@ -1,0 +1,22 @@
+{
+  "name": "Hotel Inventario",
+  "short_name": "Inventario",
+  "description": "Control de inventario y activos fijos del hotel",
+  "start_url": "/movimiento",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#1d4ed8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
