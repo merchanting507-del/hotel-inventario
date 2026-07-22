@@ -9,6 +9,7 @@ const LINKS: { href: string; label: string; roles?: string[] }[] = [
   { href: "/activos", label: "Activos", roles: ["admin", "mantenimiento"] },
   { href: "/admin/productos", label: "Productos", roles: ["admin"] },
   { href: "/admin/proveedores", label: "Proveedores", roles: ["admin"] },
+  { href: "/admin/usuarios", label: "Usuarios", roles: ["admin"] },
 ];
 
 export default function NavBar({ usuario }: { usuario: Usuario }) {

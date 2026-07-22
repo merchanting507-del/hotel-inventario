@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 
 const HOME_BY_ROL: Record<string, string> = {
@@ -47,9 +48,16 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-paper px-6">
       <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <p className="eyebrow">The Marvella Club</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold text-ink">
+        <div className="mb-6 text-center">
+          <Image
+            src="/brand/marvella-logo.png"
+            alt="The Marvella Club"
+            width={160}
+            height={160}
+            priority
+            className="mx-auto"
+          />
+          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">
             Inventario
           </h1>
           <div className="gold-rule mx-auto mt-4 w-24" />
