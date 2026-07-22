@@ -104,6 +104,18 @@ export async function venderPlatillo(
   const usuario = await requireUsuario();
   const supabase = await createClient();
 
+  // Los platillos se preparan en Cocina: los ingredientes se descuentan de
+  // su inventario local (stock_area), no del stock de bodega.
+  const { data: area } = await supabase
+    .from("areas")
+    .select("id")
+    .eq("nombre", "Cocina")
+    .maybeSingle();
+
+  if (!area) {
+    return { success: false, error: "No se encontró el área de Cocina." };
+  }
+
   const { data: platillo } = await supabase
     .from("platillos")
     .select("nombre")
@@ -112,7 +124,7 @@ export async function venderPlatillo(
 
   const { data: items, error: itemsError } = await supabase
     .from("receta_items")
-    .select("cantidad, productos(id, nombre, stock_actual, unidad_medida)")
+    .select("cantidad, productos(id, nombre, unidad_medida)")
     .eq("platillo_id", platilloId);
 
   if (itemsError || !items || items.length === 0) {
@@ -124,7 +136,7 @@ export async function venderPlatillo(
 
   type ItemConProducto = {
     cantidad: number;
-    productos: { id: string; nombre: string; stock_actual: number; unidad_medida: string } | null;
+    productos: { id: string; nombre: string; unidad_medida: string } | null;
   };
 
   for (const item of items as unknown as ItemConProducto[]) {
@@ -132,21 +144,34 @@ export async function venderPlatillo(
     if (!producto) continue;
 
     const descontado = item.cantidad * cantidadVendida;
-    const nuevoStock = Number(producto.stock_actual) - descontado;
+
+    const { data: filaExistente } = await supabase
+      .from("stock_area")
+      .select("id, cantidad")
+      .eq("area_id", area.id)
+      .eq("producto_id", producto.id)
+      .maybeSingle();
+
+    const nuevoStock = Number(filaExistente?.cantidad ?? 0) - descontado;
 
     const { error: movError } = await supabase.from("movimientos").insert({
       producto_id: producto.id,
       usuario_id: usuario.id,
       tipo: "salida",
       cantidad: descontado,
+      area_id: area.id,
       nota,
     });
     if (movError) return { success: false, error: `No se pudo registrar ${producto.nombre}.` };
 
-    const { error: stockError } = await supabase
-      .from("productos")
-      .update({ stock_actual: nuevoStock })
-      .eq("id", producto.id);
+    const { error: stockError } = filaExistente
+      ? await supabase
+          .from("stock_area")
+          .update({ cantidad: nuevoStock })
+          .eq("id", filaExistente.id)
+      : await supabase
+          .from("stock_area")
+          .insert({ area_id: area.id, producto_id: producto.id, cantidad: nuevoStock });
     if (stockError) {
       return { success: false, error: `No se pudo actualizar el stock de ${producto.nombre}.` };
     }
@@ -157,6 +182,7 @@ export async function venderPlatillo(
   revalidatePath("/admin/platillos");
   revalidatePath("/stock");
   revalidatePath("/historial");
+  revalidatePath("/movimiento");
 
   return { success: true, detalle };
 }

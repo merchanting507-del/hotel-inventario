@@ -291,7 +291,7 @@ export default function PlatillosAdmin({
 
               {ventaResultado?.platilloId === platillo.id && (
                 <div className="mt-2 rounded-lg bg-pine/10 px-3 py-2 text-xs text-pine-dark">
-                  <p className="font-semibold">Descontado del inventario:</p>
+                  <p className="font-semibold">Descontado del inventario de Cocina:</p>
                   {ventaResultado.detalle.map((d) => (
                     <p key={d.producto} className="figures">
                       {d.producto}: -{d.descontado} (queda {d.nuevoStock})
