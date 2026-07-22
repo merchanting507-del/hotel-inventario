@@ -15,7 +15,7 @@ export default async function AdminProductosPage() {
 
   return (
     <div className="px-4 py-4">
-      <h1 className="mb-4 text-xl font-bold">Productos</h1>
+      <h1 className="mb-4 font-display text-2xl font-semibold text-ink">Productos</h1>
       <ProductosAdmin
         productosIniciales={productos ?? []}
         categorias={categorias ?? []}

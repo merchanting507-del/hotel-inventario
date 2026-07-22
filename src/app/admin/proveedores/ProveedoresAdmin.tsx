@@ -77,8 +77,8 @@ export default function ProveedoresAdmin({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-xl border bg-white p-4">
-        <h2 className="mb-3 font-semibold">
+      <div className="rounded-xl border border-line bg-paper-card p-4">
+        <h2 className="mb-3 font-display text-lg font-semibold text-ink">
           {editandoId ? "Editar proveedor" : "Nuevo proveedor"}
         </h2>
         <div className="flex flex-col gap-2">
@@ -86,35 +86,35 @@ export default function ProveedoresAdmin({
             placeholder="Nombre"
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           />
           <input
             placeholder="Contacto"
             value={form.contacto ?? ""}
             onChange={(e) => setForm({ ...form, contacto: e.target.value || null })}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           />
           <input
             placeholder="WhatsApp"
             value={form.whatsapp ?? ""}
             onChange={(e) => setForm({ ...form, whatsapp: e.target.value || null })}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           />
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-wine">{error}</p>}
 
           <div className="flex gap-2">
             <button
               onClick={guardar}
               disabled={pending}
-              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white active:bg-gold-dark disabled:opacity-50"
             >
               {pending ? "Guardando..." : editandoId ? "Guardar cambios" : "Crear proveedor"}
             </button>
             {editandoId && (
               <button
                 onClick={cancelar}
-                className="rounded-lg border px-4 py-2 text-sm font-semibold text-gray-600"
+                className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink-light/70"
               >
                 Cancelar
               </button>
@@ -127,24 +127,24 @@ export default function ProveedoresAdmin({
         {proveedores.map((p) => (
           <div
             key={p.id}
-            className="flex items-center justify-between rounded-xl border bg-white px-4 py-3"
+            className="flex items-center justify-between rounded-xl border border-line bg-paper-card px-4 py-3"
           >
             <div>
-              <p className="font-medium">{p.nombre}</p>
-              <p className="text-xs text-gray-500">
+              <p className="font-medium text-ink">{p.nombre}</p>
+              <p className="text-xs text-ink-light/60">
                 {p.contacto} {p.whatsapp && `· ${p.whatsapp}`}
               </p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => editar(p)}
-                className="rounded-lg border px-3 py-1.5 text-xs font-semibold text-gray-600"
+                className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-light/70"
               >
                 Editar
               </button>
               <button
                 onClick={() => eliminar(p.id)}
-                className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600"
+                className="rounded-lg border border-wine/30 px-3 py-1.5 text-xs font-semibold text-wine"
               >
                 Eliminar
               </button>

@@ -33,56 +33,62 @@ export default function VerifyCodePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper px-6">
       <div className="w-full max-w-sm">
-        <h1 className="mb-1 text-center text-2xl font-bold text-gray-900">
-          Hotel Inventario
-        </h1>
-        <p className="mb-6 text-center text-sm text-gray-500">
-          Ingresa el código de 6 dígitos que te dieron
-        </p>
+        <div className="mb-8 text-center">
+          <p className="eyebrow">The Marvella Club</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">
+            Verificar código
+          </h1>
+          <div className="gold-rule mx-auto mt-4 w-24" />
+          <p className="mt-4 text-sm text-ink-light/70">
+            Ingresa el código de un solo uso que te dieron
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="email" className="mb-1 block text-sm font-medium">
-              Correo
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-base focus:border-brand-500 focus:outline-none"
-            />
-          </div>
+        <div className="arch-card border border-line bg-paper-card px-6 py-8 shadow-sm">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div>
+              <label htmlFor="email" className="mb-1 block text-sm font-medium text-ink">
+                Correo
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border border-line bg-white px-4 py-3 text-base text-ink focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+              />
+            </div>
 
-          <div>
-            <label htmlFor="code" className="mb-1 block text-sm font-medium">
-              Código
-            </label>
-            <input
-              id="code"
-              type="text"
-              inputMode="numeric"
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-center text-xl tracking-widest focus:border-brand-500 focus:outline-none"
-            />
-          </div>
+            <div>
+              <label htmlFor="code" className="mb-1 block text-sm font-medium text-ink">
+                Código
+              </label>
+              <input
+                id="code"
+                type="text"
+                inputMode="numeric"
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                className="figures w-full rounded-lg border border-line bg-white px-4 py-3 text-center text-xl tracking-widest text-ink focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+              />
+            </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-wine">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-touch mt-2 rounded-lg bg-brand-600 px-4 py-3 text-base font-semibold text-white active:bg-brand-700 disabled:opacity-50"
-          >
-            {loading ? "Verificando..." : "Verificar"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-touch mt-2 rounded-lg bg-gold px-4 py-3 text-base font-semibold text-white transition-colors active:bg-gold-dark disabled:opacity-50"
+            >
+              {loading ? "Verificando..." : "Verificar"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

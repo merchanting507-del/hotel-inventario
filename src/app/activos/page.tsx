@@ -12,10 +12,10 @@ interface ActivoConRelaciones {
 }
 
 const ESTADO_CLASSES: Record<string, string> = {
-  operativo: "bg-green-100 text-green-700",
-  mantenimiento: "bg-yellow-100 text-yellow-700",
-  dañado: "bg-red-100 text-red-700",
-  baja: "bg-gray-200 text-gray-600",
+  operativo: "bg-pine/10 text-pine-dark",
+  mantenimiento: "bg-gold/15 text-gold-dark",
+  dañado: "bg-wine/10 text-wine-dark",
+  baja: "bg-ink/10 text-ink-light/70",
 };
 
 export default async function ActivosPage({
@@ -48,13 +48,13 @@ export default async function ActivosPage({
 
   return (
     <div className="px-4 py-4">
-      <h1 className="mb-4 text-xl font-bold">Activos fijos</h1>
+      <h1 className="mb-4 font-display text-2xl font-semibold text-ink">Activos fijos</h1>
 
-      <form method="get" className="mb-4 flex flex-col gap-2 rounded-xl border bg-white p-3">
+      <form method="get" className="mb-4 flex flex-col gap-2 rounded-xl border border-line bg-paper-card p-3">
         <select
           name="categoria"
           defaultValue={params.categoria || ""}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink"
         >
           <option value="">Todas las categorías</option>
           {(categorias ?? []).map((c) => (
@@ -67,7 +67,7 @@ export default async function ActivosPage({
         <select
           name="ubicacion"
           defaultValue={params.ubicacion || ""}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink"
         >
           <option value="">Todas las ubicaciones</option>
           {(ubicaciones ?? []).map((u) => (
@@ -80,7 +80,7 @@ export default async function ActivosPage({
         <select
           name="estado"
           defaultValue={params.estado || ""}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          className="rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink"
         >
           <option value="">Todos los estados</option>
           <option value="operativo">Operativo</option>
@@ -91,7 +91,7 @@ export default async function ActivosPage({
 
         <button
           type="submit"
-          className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-semibold text-white"
+          className="rounded-lg bg-gold px-3 py-2 text-sm font-semibold text-white active:bg-gold-dark"
         >
           Filtrar
         </button>
@@ -102,18 +102,18 @@ export default async function ActivosPage({
           <Link
             key={a.id}
             href={`/activos/${a.id}`}
-            className="flex items-center justify-between rounded-xl border bg-white px-4 py-3"
+            className="flex items-center justify-between rounded-xl border border-line bg-paper-card px-4 py-3"
           >
             <div>
-              <p className="font-medium">{a.nombre}</p>
-              <p className="text-xs text-gray-500">
+              <p className="font-medium text-ink">{a.nombre}</p>
+              <p className="text-xs text-ink-light/60">
                 {a.categorias_activos?.nombre ?? "Sin categoría"} ·{" "}
                 {a.ubicaciones?.nombre ?? "Sin ubicación"}
               </p>
             </div>
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                ESTADO_CLASSES[a.estado] ?? "bg-gray-100 text-gray-600"
+                ESTADO_CLASSES[a.estado] ?? "bg-ink/10 text-ink-light/70"
               }`}
             >
               {a.estado}
@@ -121,7 +121,7 @@ export default async function ActivosPage({
           </Link>
         ))}
         {((activos as unknown as ActivoConRelaciones[]) ?? []).length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-400">
+          <p className="py-8 text-center text-sm text-ink-light/40">
             No hay activos que coincidan con el filtro.
           </p>
         )}

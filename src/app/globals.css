@@ -17,3 +17,36 @@ body {
   min-height: 3.5rem;
   touch-action: manipulation;
 }
+
+/* Números (cantidades, códigos) siempre en mono, alineados tabularmente:
+   guiño a las libretas y etiquetas de equipaje de un hotel. */
+.figures {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etiqueta pequeña en versalitas espaciadas, como "THE" / "& RESIDENCES"
+   en el logo de Marvella Club. */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: theme("colors.gold.dark");
+}
+
+/* Arco superior sutil, eco del arco del logo, para tarjetas destacadas. */
+.arch-card {
+  border-radius: 2.5rem 2.5rem 1rem 1rem;
+}
+
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    theme("colors.gold.DEFAULT"),
+    transparent
+  );
+}

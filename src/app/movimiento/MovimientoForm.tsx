@@ -7,23 +7,64 @@ import { registrarMovimiento } from "./actions";
 
 type Step = "producto" | "tipo" | "cantidad";
 
+const STEPS: { key: Step; label: string }[] = [
+  { key: "producto", label: "Producto" },
+  { key: "tipo", label: "Tipo" },
+  { key: "cantidad", label: "Cantidad" },
+];
+
 const TIPOS: { value: TipoMovimiento; label: string; classes: string }[] = [
   {
     value: "entrada",
     label: "Entrada",
-    classes: "bg-green-600 active:bg-green-700",
+    classes: "bg-pine active:bg-pine-dark",
   },
   {
     value: "salida",
     label: "Salida",
-    classes: "bg-brand-600 active:bg-brand-700",
+    classes: "bg-gold active:bg-gold-dark",
   },
   {
     value: "merma",
     label: "Merma",
-    classes: "bg-red-600 active:bg-red-700",
+    classes: "bg-wine active:bg-wine-dark",
   },
 ];
+
+function StepIndicator({ current }: { current: Step }) {
+  const currentIndex = STEPS.findIndex((s) => s.key === current);
+  return (
+    <div className="mb-5 flex items-center">
+      {STEPS.map((step, i) => (
+        <div key={step.key} className="flex flex-1 items-center last:flex-none">
+          <div className="flex flex-col items-center gap-1">
+            <div
+              className={`figures flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${
+                i <= currentIndex
+                  ? "bg-gold text-white"
+                  : "border border-line bg-white text-ink-light/50"
+              }`}
+            >
+              {i + 1}
+            </div>
+            <span
+              className={`eyebrow !text-[0.6rem] ${
+                i <= currentIndex ? "!text-gold-dark" : "!text-ink-light/40"
+              }`}
+            >
+              {step.label}
+            </span>
+          </div>
+          {i < STEPS.length - 1 && (
+            <div
+              className={`mx-2 mb-4 h-px flex-1 ${i < currentIndex ? "bg-gold" : "bg-line"}`}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function MovimientoForm({
   productos,
@@ -116,22 +157,23 @@ export default function MovimientoForm({
   if (step === "tipo" && seleccionado) {
     return (
       <div className="flex flex-col gap-4">
-        <button onClick={volver} className="text-sm text-gray-500">
+        <StepIndicator current={step} />
+        <button onClick={volver} className="text-sm text-ink-light/60">
           ← Cambiar producto
         </button>
-        <div className="rounded-xl border bg-white p-4">
-          <p className="text-lg font-semibold">{seleccionado.nombre}</p>
-          <p className="text-sm text-gray-500">
+        <div className="arch-card border border-line bg-paper-card p-4">
+          <p className="font-display text-lg font-semibold text-ink">{seleccionado.nombre}</p>
+          <p className="figures text-sm text-ink-light/60">
             Stock actual: {seleccionado.stock_actual} {seleccionado.unidad_medida}
           </p>
         </div>
-        <p className="text-sm font-medium text-gray-600">¿Qué tipo de movimiento es?</p>
+        <p className="eyebrow">¿Qué tipo de movimiento es?</p>
         <div className="flex flex-col gap-3">
           {TIPOS.map((t) => (
             <button
               key={t.value}
               onClick={() => elegirTipo(t.value)}
-              className={`btn-touch rounded-xl text-lg font-bold text-white ${t.classes}`}
+              className={`btn-touch rounded-xl text-lg font-semibold text-white transition-colors ${t.classes}`}
             >
               {t.label}
             </button>
@@ -144,27 +186,28 @@ export default function MovimientoForm({
   if (step === "cantidad" && seleccionado && tipo) {
     return (
       <div className="flex flex-col gap-4">
-        <button onClick={volver} className="text-sm text-gray-500">
+        <StepIndicator current={step} />
+        <button onClick={volver} className="text-sm text-ink-light/60">
           ← Cambiar tipo
         </button>
-        <div className="rounded-xl border bg-white p-4 text-center">
-          <p className="text-lg font-semibold">{seleccionado.nombre}</p>
-          <p className="text-sm capitalize text-gray-500">{tipo}</p>
-          <p className="mt-2 text-4xl font-bold tabular-nums">
-            {cantidad} <span className="text-lg font-normal">{seleccionado.unidad_medida}</span>
+        <div className="arch-card border border-line bg-paper-card p-4 text-center">
+          <p className="font-display text-lg font-semibold text-ink">{seleccionado.nombre}</p>
+          <p className="eyebrow mt-1">{tipo}</p>
+          <p className="figures mt-2 text-4xl font-semibold text-ink">
+            {cantidad} <span className="text-lg font-normal text-ink-light/60">{seleccionado.unidad_medida}</span>
           </p>
         </div>
 
         <Keypad value={cantidad} onChange={setCantidad} />
 
         {mensaje && mensaje.tipo === "error" && (
-          <p className="text-sm text-red-600">{mensaje.texto}</p>
+          <p className="text-sm text-wine">{mensaje.texto}</p>
         )}
 
         <button
           onClick={confirmar}
           disabled={pending || !parseFloat(cantidad)}
-          className="btn-touch rounded-xl bg-brand-600 text-lg font-bold text-white active:bg-brand-700 disabled:opacity-40"
+          className="btn-touch rounded-xl bg-gold text-lg font-semibold text-white transition-colors active:bg-gold-dark disabled:opacity-40"
         >
           {pending ? "Guardando..." : "Confirmar"}
         </button>
@@ -174,12 +217,13 @@ export default function MovimientoForm({
 
   return (
     <div className="flex flex-col gap-3">
+      <StepIndicator current={step} />
       {mensaje && (
         <p
           className={`rounded-lg px-3 py-2 text-sm ${
             mensaje.tipo === "ok"
-              ? "bg-green-50 text-green-700"
-              : "bg-red-50 text-red-700"
+              ? "bg-pine/10 text-pine-dark"
+              : "bg-wine/10 text-wine-dark"
           }`}
         >
           {mensaje.texto}
@@ -191,16 +235,16 @@ export default function MovimientoForm({
         placeholder="Buscar producto..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full rounded-lg border border-gray-300 px-4 py-3 text-base focus:border-brand-500 focus:outline-none"
+        className="w-full rounded-lg border border-line bg-white px-4 py-3 text-base text-ink focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
       />
 
       <div className="flex gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setCategoriaId("todas")}
-          className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm ${
+          className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
             categoriaId === "todas"
-              ? "bg-brand-600 text-white"
-              : "bg-gray-100 text-gray-700"
+              ? "bg-gold text-white"
+              : "bg-paper-card text-ink-light/70 border border-line"
           }`}
         >
           Todas
@@ -209,10 +253,10 @@ export default function MovimientoForm({
           <button
             key={c.id}
             onClick={() => setCategoriaId(c.id)}
-            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm ${
+            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
               categoriaId === c.id
-                ? "bg-brand-600 text-white"
-                : "bg-gray-100 text-gray-700"
+                ? "bg-gold text-white"
+                : "bg-paper-card text-ink-light/70 border border-line"
             }`}
           >
             {c.nombre}
@@ -222,7 +266,7 @@ export default function MovimientoForm({
 
       <div className="flex flex-col gap-2">
         {productosFiltrados.length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-400">
+          <p className="py-8 text-center text-sm text-ink-light/40">
             No hay productos que coincidan.
           </p>
         )}
@@ -230,10 +274,10 @@ export default function MovimientoForm({
           <button
             key={producto.id}
             onClick={() => elegirProducto(producto)}
-            className="btn-touch flex items-center justify-between rounded-xl border bg-white px-4 py-3 text-left active:bg-gray-50"
+            className="btn-touch flex items-center justify-between rounded-xl border border-line bg-paper-card px-4 py-3 text-left transition-colors active:bg-gold-light/30"
           >
-            <span className="font-medium">{producto.nombre}</span>
-            <span className="text-sm text-gray-500">
+            <span className="font-medium text-ink">{producto.nombre}</span>
+            <span className="figures text-sm text-ink-light/60">
               {producto.stock_actual} {producto.unidad_medida}
             </span>
           </button>

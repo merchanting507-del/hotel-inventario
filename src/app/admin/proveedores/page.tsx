@@ -12,7 +12,7 @@ export default async function AdminProveedoresPage() {
 
   return (
     <div className="px-4 py-4">
-      <h1 className="mb-4 text-xl font-bold">Proveedores</h1>
+      <h1 className="mb-4 font-display text-2xl font-semibold text-ink">Proveedores</h1>
       <ProveedoresAdmin proveedoresIniciales={proveedores ?? []} />
     </div>
   );

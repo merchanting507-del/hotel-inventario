@@ -96,8 +96,8 @@ export default function ProductosAdmin({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-xl border bg-white p-4">
-        <h2 className="mb-3 font-semibold">
+      <div className="rounded-xl border border-line bg-paper-card p-4">
+        <h2 className="mb-3 font-display text-lg font-semibold text-ink">
           {editandoId ? "Editar producto" : "Nuevo producto"}
         </h2>
 
@@ -106,7 +106,7 @@ export default function ProductosAdmin({
             placeholder="Nombre"
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           />
 
           <select
@@ -114,7 +114,7 @@ export default function ProductosAdmin({
             onChange={(e) =>
               setForm({ ...form, categoria_id: e.target.value || null })
             }
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           >
             <option value="">Sin categoría</option>
             {categorias.map((c) => (
@@ -128,11 +128,11 @@ export default function ProductosAdmin({
             placeholder="Unidad de medida (kg, litro, unidad...)"
             value={form.unidad_medida}
             onChange={(e) => setForm({ ...form, unidad_medida: e.target.value })}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           />
 
           <div className="grid grid-cols-2 gap-2">
-            <label className="text-xs text-gray-500">
+            <label className="text-xs text-ink-light/60">
               Stock actual
               <input
                 type="number"
@@ -140,10 +140,10 @@ export default function ProductosAdmin({
                 onChange={(e) =>
                   setForm({ ...form, stock_actual: Number(e.target.value) })
                 }
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
               />
             </label>
-            <label className="text-xs text-gray-500">
+            <label className="text-xs text-ink-light/60">
               Stock mínimo
               <input
                 type="number"
@@ -151,10 +151,10 @@ export default function ProductosAdmin({
                 onChange={(e) =>
                   setForm({ ...form, stock_minimo: Number(e.target.value) })
                 }
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
               />
             </label>
-            <label className="text-xs text-gray-500">
+            <label className="text-xs text-ink-light/60">
               Días reposición
               <input
                 type="number"
@@ -162,10 +162,10 @@ export default function ProductosAdmin({
                 onChange={(e) =>
                   setForm({ ...form, dias_reposicion: Number(e.target.value) })
                 }
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
               />
             </label>
-            <label className="text-xs text-gray-500">
+            <label className="text-xs text-ink-light/60">
               Consumo prom. diario
               <input
                 type="number"
@@ -176,10 +176,10 @@ export default function ProductosAdmin({
                     consumo_promedio_diario: Number(e.target.value),
                   })
                 }
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
               />
             </label>
-            <label className="text-xs text-gray-500">
+            <label className="text-xs text-ink-light/60">
               Costo unitario
               <input
                 type="number"
@@ -190,7 +190,7 @@ export default function ProductosAdmin({
                     costo_unitario: e.target.value ? Number(e.target.value) : null,
                   })
                 }
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm"
               />
             </label>
           </div>
@@ -200,7 +200,7 @@ export default function ProductosAdmin({
             onChange={(e) =>
               setForm({ ...form, proveedor_id: e.target.value || null })
             }
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-lg border border-line px-3 py-2 text-sm"
           >
             <option value="">Sin proveedor</option>
             {proveedores.map((p) => (
@@ -219,20 +219,20 @@ export default function ProductosAdmin({
             Activo
           </label>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-wine">{error}</p>}
 
           <div className="flex gap-2">
             <button
               onClick={guardar}
               disabled={pending}
-              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white active:bg-gold-dark disabled:opacity-50"
             >
               {pending ? "Guardando..." : editandoId ? "Guardar cambios" : "Crear producto"}
             </button>
             {editandoId && (
               <button
                 onClick={cancelar}
-                className="rounded-lg border px-4 py-2 text-sm font-semibold text-gray-600"
+                className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-ink-light/70"
               >
                 Cancelar
               </button>
@@ -245,11 +245,11 @@ export default function ProductosAdmin({
         {productos.map((p) => (
           <div
             key={p.id}
-            className="flex items-center justify-between rounded-xl border bg-white px-4 py-3"
+            className="flex items-center justify-between rounded-xl border border-line bg-paper-card px-4 py-3"
           >
             <div>
-              <p className="font-medium">{p.nombre}</p>
-              <p className="text-xs text-gray-500">
+              <p className="font-medium text-ink">{p.nombre}</p>
+              <p className="text-xs text-ink-light/60">
                 {p.stock_actual} {p.unidad_medida} · mín {p.stock_minimo}
                 {!p.activo && " · inactivo"}
               </p>
@@ -257,13 +257,13 @@ export default function ProductosAdmin({
             <div className="flex gap-2">
               <button
                 onClick={() => editar(p)}
-                className="rounded-lg border px-3 py-1.5 text-xs font-semibold text-gray-600"
+                className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-light/70"
               >
                 Editar
               </button>
               <button
                 onClick={() => eliminar(p.id)}
-                className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600"
+                className="rounded-lg border border-wine/30 px-3 py-1.5 text-xs font-semibold text-wine"
               >
                 Eliminar
               </button>

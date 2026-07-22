@@ -26,7 +26,7 @@ export default function Keypad({
           key={key}
           type="button"
           onClick={() => press(key)}
-          className="btn-touch rounded-xl bg-gray-100 text-2xl font-semibold text-gray-800 active:bg-gray-200"
+          className="figures btn-touch rounded-xl border border-line bg-white text-2xl font-semibold text-ink active:bg-paper"
         >
           {key}
         </button>

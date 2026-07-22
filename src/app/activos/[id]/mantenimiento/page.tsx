@@ -22,8 +22,8 @@ export default async function NuevoMantenimientoPage({
 
   return (
     <div className="px-4 py-4">
-      <h1 className="mb-1 text-xl font-bold">Registrar mantenimiento</h1>
-      <p className="mb-4 text-sm text-gray-500">{activo.nombre}</p>
+      <h1 className="mb-1 font-display text-2xl font-semibold text-ink">Registrar mantenimiento</h1>
+      <p className="mb-4 text-sm text-ink-light/60">{activo.nombre}</p>
       <MantenimientoForm activoId={activo.id} />
     </div>
   );

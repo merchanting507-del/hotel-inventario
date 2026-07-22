@@ -26,7 +26,7 @@ export default function EstadoSelector({
       defaultValue={estadoActual}
       disabled={pending}
       onChange={(e) => cambiar(e.target.value as EstadoActivo)}
-      className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
+      className="rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink"
     >
       {ESTADOS.map((e) => (
         <option key={e} value={e}>

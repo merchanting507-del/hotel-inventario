@@ -39,7 +39,7 @@ export default function MantenimientoForm({ activoId }: { activoId: string }) {
         <select
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-3 text-base"
+          className="mt-1 w-full rounded-lg border border-line bg-white text-ink px-3 py-3 text-base"
         >
           <option value="preventivo">Preventivo</option>
           <option value="correctivo">Correctivo</option>
@@ -53,7 +53,7 @@ export default function MantenimientoForm({ activoId }: { activoId: string }) {
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           rows={3}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-3 text-base"
+          className="mt-1 w-full rounded-lg border border-line bg-white text-ink px-3 py-3 text-base"
         />
       </label>
 
@@ -63,7 +63,7 @@ export default function MantenimientoForm({ activoId }: { activoId: string }) {
           type="number"
           value={costo}
           onChange={(e) => setCosto(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-3 text-base"
+          className="mt-1 w-full rounded-lg border border-line bg-white text-ink px-3 py-3 text-base"
         />
       </label>
 
@@ -73,16 +73,16 @@ export default function MantenimientoForm({ activoId }: { activoId: string }) {
           type="date"
           value={proximo}
           onChange={(e) => setProximo(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-3 text-base"
+          className="mt-1 w-full rounded-lg border border-line bg-white text-ink px-3 py-3 text-base"
         />
       </label>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-wine">{error}</p>}
 
       <button
         onClick={guardar}
         disabled={pending}
-        className="btn-touch mt-2 rounded-xl bg-brand-600 text-lg font-bold text-white active:bg-brand-700 disabled:opacity-50"
+        className="btn-touch mt-2 rounded-xl bg-gold text-lg font-semibold text-white active:bg-gold-dark disabled:opacity-50"
       >
         {pending ? "Guardando..." : "Guardar mantenimiento"}
       </button>

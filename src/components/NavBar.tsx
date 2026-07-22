@@ -15,21 +15,21 @@ export default function NavBar({ usuario }: { usuario: Usuario }) {
   const links = LINKS.filter((l) => !l.roles || l.roles.includes(usuario.rol));
 
   return (
-    <header className="sticky top-0 z-10 border-b bg-white">
+    <header className="sticky top-0 z-10 border-b border-line bg-ink">
       <div className="flex items-center justify-between gap-2 overflow-x-auto px-3 py-2">
         <nav className="flex items-center gap-1 overflow-x-auto">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-paper/80 hover:bg-white/10 hover:text-paper"
             >
               {l.label}
             </Link>
           ))}
         </nav>
         <div className="flex items-center gap-2 whitespace-nowrap pl-2">
-          <span className="text-xs text-gray-500">{usuario.nombre}</span>
+          <span className="text-xs text-gold-light">{usuario.nombre}</span>
           <LogoutButton />
         </div>
       </div>

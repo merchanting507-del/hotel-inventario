@@ -1,11 +1,11 @@
 {
-  "name": "Hotel Inventario",
+  "name": "Marvella Club · Inventario",
   "short_name": "Inventario",
-  "description": "Control de inventario y activos fijos del hotel",
+  "description": "Control de inventario y activos fijos de The Marvella Club",
   "start_url": "/movimiento",
   "display": "standalone",
-  "background_color": "#f9fafb",
-  "theme_color": "#1d4ed8",
+  "background_color": "#F6F1E6",
+  "theme_color": "#1E2530",
   "orientation": "portrait",
   "icons": [
     {
