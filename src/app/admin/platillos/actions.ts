@@ -35,11 +35,20 @@ export async function guardarPlatillo(
   let platilloId = id;
 
   if (platilloId) {
-    const { error } = await supabase
+    const { data: actualizado, error } = await supabase
       .from("platillos")
       .update({ nombre: input.nombre })
-      .eq("id", platilloId);
+      .eq("id", platilloId)
+      .select("id")
+      .maybeSingle();
     if (error) return { success: false, error: error.message };
+    if (!actualizado) {
+      return {
+        success: false,
+        error:
+          "Este platillo ya no existe — puede que otro admin lo haya eliminado. Actualiza la página.",
+      };
+    }
 
     const { error: deleteError } = await supabase
       .from("receta_items")
