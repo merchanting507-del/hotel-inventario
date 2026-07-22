@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/types/database.types";
 
-const PUBLIC_PATHS = ["/login", "/manifest.json", "/sw.js", "/auth/set-password"];
+const PUBLIC_PATHS = ["/login", "/manifest.json", "/sw.js", "/auth/set-password", "/auth/verify-code"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
