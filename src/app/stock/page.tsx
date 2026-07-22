@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireUsuario } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Producto } from "@/types/database.types";
@@ -21,21 +22,38 @@ function semaforoLocal(cantidad: number): { color: string; label: string } {
     : { color: "bg-pine", label: "Hay" };
 }
 
-export default async function StockPage() {
+export default async function StockPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  const params = await searchParams;
   const usuario = await requireUsuario();
   const supabase = await createClient();
   // "compras" no pertenece a un área física fija: necesita ver el stock
   // de todos los productos, no solo los de un área.
   const isAdmin = usuario.rol === "admin" || usuario.rol === "compras";
   const esCocina = usuario.rol === "cocina";
+  // Admin/compras puede alternar a ver el inventario local de Cocina con
+  // ?vista=cocina, ya que ellos son quienes hacen las transferencias pero
+  // no tienen su propia fila de stock_area.
+  const verCocina = esCocina || (isAdmin && params.vista === "cocina");
 
   const { data: categorias } = await supabase.from("categorias").select("*");
 
-  const categoriaIds = isAdmin
+  let areaId = usuario.area_id;
+  if (isAdmin && verCocina) {
+    const { data: areaCocina } = await supabase
+      .from("areas")
+      .select("id")
+      .eq("nombre", "Cocina")
+      .maybeSingle();
+    areaId = areaCocina?.id ?? null;
+  }
+
+  const categoriaIds = isAdmin && !verCocina
     ? (categorias ?? []).map((c) => c.id)
-    : (categorias ?? [])
-        .filter((c) => c.area_id === usuario.area_id)
-        .map((c) => c.id);
+    : (categorias ?? []).filter((c) => c.area_id === areaId).map((c) => c.id);
 
   const query = supabase
     .from("productos")
@@ -43,17 +61,19 @@ export default async function StockPage() {
     .eq("activo", true)
     .order("nombre");
 
-  const { data: productos } = isAdmin
-    ? await query
-    : await query.in("categoria_id", categoriaIds.length ? categoriaIds : ["-"]);
+  const { data: productos } =
+    isAdmin && !verCocina
+      ? await query
+      : await query.in("categoria_id", categoriaIds.length ? categoriaIds : ["-"]);
 
-  // Cocina ve su inventario local (stock_area), no el de bodega.
+  // Cocina (o admin viendo "Cocina") ve el inventario local (stock_area),
+  // no el de bodega.
   let productosParaMostrar = productos ?? [];
-  if (esCocina && usuario.area_id) {
+  if (verCocina && areaId) {
     const { data: stockCocina } = await supabase
       .from("stock_area")
       .select("*")
-      .eq("area_id", usuario.area_id);
+      .eq("area_id", areaId);
 
     const cantidadPorProducto = new Map(
       (stockCocina ?? []).map((s) => [s.producto_id, s.cantidad])
@@ -67,10 +87,32 @@ export default async function StockPage() {
 
   return (
     <div className="px-4 py-4">
-      <h1 className="mb-4 font-display text-2xl font-semibold text-ink">Stock</h1>
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="font-display text-2xl font-semibold text-ink">Stock</h1>
+        {isAdmin && (
+          <div className="flex overflow-hidden rounded-lg border border-line text-sm">
+            <Link
+              href="/stock"
+              className={`px-3 py-1.5 font-medium ${
+                !verCocina ? "bg-gold text-white" : "bg-white text-ink-light/70"
+              }`}
+            >
+              Bodega
+            </Link>
+            <Link
+              href="/stock?vista=cocina"
+              className={`px-3 py-1.5 font-medium ${
+                verCocina ? "bg-gold text-white" : "bg-white text-ink-light/70"
+              }`}
+            >
+              Cocina
+            </Link>
+          </div>
+        )}
+      </div>
       <div className="flex flex-col gap-2">
         {productosParaMostrar.map((producto) => {
-          const { color, label } = esCocina ? semaforoLocal(producto.stock_actual) : semaforo(producto);
+          const { color, label } = verCocina ? semaforoLocal(producto.stock_actual) : semaforo(producto);
           return (
             <div
               key={producto.id}
@@ -83,7 +125,7 @@ export default async function StockPage() {
                 />
                 <div>
                   <p className="font-medium text-ink">{producto.nombre}</p>
-                  {!esCocina && (
+                  {!verCocina && (
                     <p className="figures text-xs text-ink-light/50">
                       Mínimo: {producto.stock_minimo} {producto.unidad_medida}
                     </p>
@@ -101,7 +143,9 @@ export default async function StockPage() {
         })}
         {productosParaMostrar.length === 0 && (
           <p className="py-8 text-center text-sm text-ink-light/40">
-            No hay productos registrados para tu área.
+            {verCocina
+              ? "Cocina todavía no tiene productos transferidos."
+              : "No hay productos registrados para tu área."}
           </p>
         )}
       </div>
