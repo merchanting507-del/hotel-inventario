@@ -101,6 +101,19 @@ export interface Mantenimiento {
   proximo_mantenimiento: string | null;
 }
 
+export interface Platillo {
+  id: string;
+  nombre: string;
+  activo: boolean;
+}
+
+export interface RecetaItem {
+  id: string;
+  platillo_id: string | null;
+  producto_id: string | null;
+  cantidad: number;
+}
+
 export interface StockBajoRow {
   id: string;
   nombre: string;
@@ -184,6 +197,18 @@ export interface Database {
         Row: Mantenimiento;
         Insert: Partial<Mantenimiento>;
         Update: Partial<Mantenimiento>;
+        Relationships: [];
+      };
+      platillos: {
+        Row: Platillo;
+        Insert: Partial<Platillo>;
+        Update: Partial<Platillo>;
+        Relationships: [];
+      };
+      receta_items: {
+        Row: RecetaItem;
+        Insert: Partial<RecetaItem>;
+        Update: Partial<RecetaItem>;
         Relationships: [];
       };
     };
