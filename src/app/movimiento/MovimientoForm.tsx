@@ -113,6 +113,13 @@ export default function MovimientoForm({
     else if (step === "tipo") setStep("producto");
   }
 
+  function cancelar() {
+    setSeleccionado(null);
+    setTipo(null);
+    setCantidad("0");
+    setStep("producto");
+  }
+
   function confirmar() {
     if (!seleccionado || !tipo) return;
     const cantidadNum = parseFloat(cantidad);
@@ -158,7 +165,10 @@ export default function MovimientoForm({
     return (
       <div className="flex flex-col gap-4">
         <StepIndicator current={step} />
-        <button onClick={volver} className="text-sm text-ink-light/60">
+        <button
+          onClick={volver}
+          className="btn-touch self-start rounded-lg border border-line px-4 text-sm font-medium text-ink-light/70 active:bg-paper-card"
+        >
           ← Cambiar producto
         </button>
         <div className="arch-card border border-line bg-paper-card p-4">
@@ -187,9 +197,20 @@ export default function MovimientoForm({
     return (
       <div className="flex flex-col gap-4">
         <StepIndicator current={step} />
-        <button onClick={volver} className="text-sm text-ink-light/60">
-          ← Cambiar tipo
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={volver}
+            className="btn-touch flex-1 rounded-lg border border-line px-4 text-sm font-medium text-ink-light/70 active:bg-paper-card"
+          >
+            ← Cambiar tipo
+          </button>
+          <button
+            onClick={cancelar}
+            className="btn-touch flex-1 rounded-lg border border-wine/30 px-4 text-sm font-medium text-wine active:bg-wine/10"
+          >
+            Cancelar
+          </button>
+        </div>
         <div className="arch-card border border-line bg-paper-card p-4 text-center">
           <p className="font-display text-lg font-semibold text-ink">{seleccionado.nombre}</p>
           <p className="eyebrow mt-1">{tipo}</p>

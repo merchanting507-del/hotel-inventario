@@ -4,6 +4,7 @@ import "./globals.css";
 import { getCurrentUsuario } from "@/lib/auth";
 import NavBar from "@/components/NavBar";
 import RegisterServiceWorker from "@/components/RegisterServiceWorker";
+import BfcacheReload from "@/components/BfcacheReload";
 
 const display = Playfair_Display({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default async function RootLayout({
         {usuario && <NavBar usuario={usuario} />}
         <main className="mx-auto w-full max-w-lg pb-8">{children}</main>
         <RegisterServiceWorker />
+        <BfcacheReload />
       </body>
     </html>
   );
