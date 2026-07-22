@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Rol, Usuario } from "@/types/database.types";
@@ -5,8 +6,15 @@ import type { Rol, Usuario } from "@/types/database.types";
 /**
  * Devuelve el usuario autenticado (fila de `usuarios`, enlazada por auth_user_id)
  * o null si no hay sesión o el auth_user_id no está enlazado a ningún usuario.
+ *
+ * Memoizado con `cache()`: el layout raíz y cada página llaman esto por su
+ * cuenta, y sin memoizar cada uno dispara su propio round-trip a Supabase
+ * Auth. En frío (primera carga en un dispositivo) una de esas llamadas
+ * podía fallar/tardar mientras la otra sí resolvía, dejando la barra de
+ * navegación en blanco aunque la página sí cargara datos. Con `cache()`
+ * ambos comparten el mismo resultado dentro del mismo request.
  */
-export async function getCurrentUsuario(): Promise<Usuario | null> {
+export const getCurrentUsuario = cache(async (): Promise<Usuario | null> => {
   const supabase = await createClient();
 
   const {
@@ -22,7 +30,7 @@ export async function getCurrentUsuario(): Promise<Usuario | null> {
     .maybeSingle();
 
   return usuario ?? null;
-}
+});
 
 /**
  * Para usar en Server Components/páginas: exige sesión + usuario enlazado,
