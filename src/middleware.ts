@@ -10,6 +10,6 @@ export const config = {
     /*
      * Corre en todas las rutas excepto archivos estáticos de Next y assets públicos.
      */
-    "/((?!_next/static|_next/image|favicon.ico|icons/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icons/|brand/).*)",
   ],
 };
