@@ -24,6 +24,44 @@ export async function registrarMovimiento(
 
   const usuario = await requireUsuario();
   const supabase = await createClient();
+  const delta = tipo === "entrada" ? cantidad : -cantidad;
+
+  // El rol cocina tiene su propio inventario local (stock_area), separado
+  // del stock de bodega: sus movimientos no tocan productos.stock_actual.
+  if (usuario.rol === "cocina" && usuario.area_id) {
+    const { data: fila } = await supabase
+      .from("stock_area")
+      .select("id, cantidad")
+      .eq("area_id", usuario.area_id)
+      .eq("producto_id", productoId)
+      .maybeSingle();
+
+    const nuevoStock = Number(fila?.cantidad ?? 0) + delta;
+
+    const { error: movError } = await supabase.from("movimientos").insert({
+      producto_id: productoId,
+      usuario_id: usuario.id,
+      tipo,
+      cantidad,
+      area_id: usuario.area_id,
+      nota: nota || null,
+    });
+    if (movError) return { success: false, error: "No se pudo registrar el movimiento." };
+
+    const { error: stockError } = fila
+      ? await supabase.from("stock_area").update({ cantidad: nuevoStock }).eq("id", fila.id)
+      : await supabase
+          .from("stock_area")
+          .insert({ area_id: usuario.area_id, producto_id: productoId, cantidad: nuevoStock });
+    if (stockError) {
+      return { success: false, error: "Movimiento guardado, pero no se pudo actualizar el stock." };
+    }
+
+    revalidatePath("/movimiento");
+    revalidatePath("/stock");
+    revalidatePath("/historial");
+    return { success: true, nuevoStock };
+  }
 
   const { data: producto, error: productoError } = await supabase
     .from("productos")
@@ -35,7 +73,6 @@ export async function registrarMovimiento(
     return { success: false, error: "Producto no encontrado." };
   }
 
-  const delta = tipo === "entrada" ? cantidad : -cantidad;
   const nuevoStock = Number(producto.stock_actual) + delta;
 
   const { error: movError } = await supabase.from("movimientos").insert({

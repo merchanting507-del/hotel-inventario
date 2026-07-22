@@ -12,7 +12,7 @@ export type Rol =
   | "piscina_jardin"
   | "compras";
 
-export type TipoMovimiento = "entrada" | "salida" | "merma";
+export type TipoMovimiento = "entrada" | "salida" | "merma" | "transferencia";
 
 export type EstadoActivo = "operativo" | "mantenimiento" | "dañado" | "baja";
 
@@ -64,6 +64,16 @@ export interface Movimiento {
   cantidad: number;
   fecha: string;
   nota: string | null;
+  // null = movimiento de bodega (productos.stock_actual). Con valor =
+  // movimiento local de esa area (stock_area), no toca el stock de bodega.
+  area_id: string | null;
+}
+
+export interface StockArea {
+  id: string;
+  area_id: string;
+  producto_id: string;
+  cantidad: number;
 }
 
 export interface CategoriaActivo {
@@ -209,6 +219,12 @@ export interface Database {
         Row: RecetaItem;
         Insert: Partial<RecetaItem>;
         Update: Partial<RecetaItem>;
+        Relationships: [];
+      };
+      stock_area: {
+        Row: StockArea;
+        Insert: Partial<StockArea>;
+        Update: Partial<StockArea>;
         Relationships: [];
       };
     };

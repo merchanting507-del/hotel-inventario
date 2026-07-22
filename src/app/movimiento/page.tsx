@@ -31,11 +31,30 @@ export default async function MovimientoPage() {
     ? await productosQuery
     : await productosQuery.in("categoria_id", categoriaIds.length ? categoriaIds : ["-"]);
 
+  // Cocina tiene su propio inventario local: el "stock actual" que ve y
+  // registra es el de stock_area, no el de bodega.
+  let productosParaMostrar = productos ?? [];
+  if (usuario.rol === "cocina" && usuario.area_id) {
+    const { data: stockCocina } = await supabase
+      .from("stock_area")
+      .select("*")
+      .eq("area_id", usuario.area_id);
+
+    const cantidadPorProducto = new Map(
+      (stockCocina ?? []).map((s) => [s.producto_id, s.cantidad])
+    );
+
+    productosParaMostrar = productosParaMostrar.map((p) => ({
+      ...p,
+      stock_actual: cantidadPorProducto.get(p.id) ?? 0,
+    }));
+  }
+
   return (
     <div className="px-4 py-4">
       <h1 className="mb-4 font-display text-2xl font-semibold text-ink">Registrar movimiento</h1>
       <MovimientoForm
-        productos={productos ?? []}
+        productos={productosParaMostrar}
         categorias={categoriasDelArea}
       />
     </div>

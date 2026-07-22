@@ -22,6 +22,7 @@ export default async function HistorialPage({
   // "compras" no pertenece a un área física fija: necesita ver el
   // historial de todas las áreas, igual que admin.
   const isAdmin = usuario.rol === "admin" || usuario.rol === "compras";
+  const esCocina = usuario.rol === "cocina";
 
   const { data: areas } = await supabase.from("areas").select("*").order("nombre");
   const { data: categorias } = await supabase.from("categorias").select("*");
@@ -54,7 +55,12 @@ export default async function HistorialPage({
     .order("fecha", { ascending: false })
     .limit(200);
 
-  if (!isAdmin) {
+  if (esCocina && usuario.area_id) {
+    // Cocina tiene su propio inventario local: solo ve sus movimientos
+    // locales y las transferencias que le llegaron de bodega, no el
+    // historial general de bodega para los mismos productos.
+    query = query.eq("area_id", usuario.area_id);
+  } else if (!isAdmin) {
     const idsPermitidos = productosFiltroArea.map((p) => p.id);
     query = query.in("producto_id", idsPermitidos.length ? idsPermitidos : ["-"]);
   } else if (areaFiltro) {
@@ -145,7 +151,7 @@ export default async function HistorialPage({
               <p className="font-medium text-ink">{m.productos?.nombre ?? "Producto eliminado"}</p>
               <span
                 className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                  m.tipo === "entrada"
+                  m.tipo === "entrada" || m.tipo === "transferencia"
                     ? "bg-pine/10 text-pine-dark"
                     : m.tipo === "salida"
                       ? "bg-gold/15 text-gold-dark"
