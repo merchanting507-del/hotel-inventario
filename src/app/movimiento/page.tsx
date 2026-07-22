@@ -6,7 +6,9 @@ export default async function MovimientoPage() {
   const usuario = await requireUsuario();
   const supabase = await createClient();
 
-  const isAdmin = usuario.rol === "admin";
+  // "compras" no pertenece a un área física fija: necesita ver todos los
+  // productos para poder registrar movimientos de cualquier área.
+  const isAdmin = usuario.rol === "admin" || usuario.rol === "compras";
 
   const { data: categorias } = await supabase
     .from("categorias")

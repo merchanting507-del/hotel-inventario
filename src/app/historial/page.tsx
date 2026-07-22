@@ -19,7 +19,9 @@ export default async function HistorialPage({
   const params = await searchParams;
   const usuario = await requireUsuario();
   const supabase = await createClient();
-  const isAdmin = usuario.rol === "admin";
+  // "compras" no pertenece a un área física fija: necesita ver el
+  // historial de todas las áreas, igual que admin.
+  const isAdmin = usuario.rol === "admin" || usuario.rol === "compras";
 
   const { data: areas } = await supabase.from("areas").select("*").order("nombre");
   const { data: categorias } = await supabase.from("categorias").select("*");

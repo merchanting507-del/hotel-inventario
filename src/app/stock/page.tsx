@@ -15,7 +15,9 @@ function semaforo(producto: Producto): { color: string; label: string } {
 export default async function StockPage() {
   const usuario = await requireUsuario();
   const supabase = await createClient();
-  const isAdmin = usuario.rol === "admin";
+  // "compras" no pertenece a un área física fija: necesita ver el stock
+  // de todos los productos, no solo los de un área.
+  const isAdmin = usuario.rol === "admin" || usuario.rol === "compras";
 
   const { data: categorias } = await supabase.from("categorias").select("*");
 
