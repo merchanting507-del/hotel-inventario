@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SetPasswordPage() {
-  const router = useRouter();
   const [ready, setReady] = useState(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -49,8 +47,8 @@ export default function SetPasswordPage() {
       return;
     }
 
-    router.refresh();
-    router.push("/");
+    // Navegación completa a propósito: ver nota en login/page.tsx.
+    window.location.href = "/";
   }
 
   return (

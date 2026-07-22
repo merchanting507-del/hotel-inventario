@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 
@@ -12,7 +11,6 @@ const HOME_BY_ROL: Record<string, string> = {
 };
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -41,8 +39,12 @@ export default function LoginPage() {
       .eq("auth_user_id", data.user.id)
       .maybeSingle();
 
-    router.refresh();
-    router.push(usuario ? HOME_BY_ROL[usuario.rol] ?? "/movimiento" : "/movimiento");
+    // Navegación completa (no router.push) a propósito: así el layout raíz
+    // vuelve a pedir la sesión desde cero y no hay carrera con router.refresh()
+    // que a veces dejaba la barra de navegación sin renderizar.
+    window.location.href = usuario
+      ? HOME_BY_ROL[usuario.rol] ?? "/movimiento"
+      : "/movimiento";
   }
 
   return (
